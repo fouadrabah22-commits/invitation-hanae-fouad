@@ -160,7 +160,8 @@ input[type=text]{width:100%;padding:12px 14px;border-radius:12px;border:2px soli
     <p id="addr"></p>
     <div class="row">
       <a class="btn b-green" id="mapLink" href="#" target="_blank" rel="noopener">📍 افتح الخريطة</a>
-      <a class="btn b-blue" id="calLink" href="#" target="_blank" rel="noopener">📅 أضف للتقويم</a>
+      <a class="btn b-blue" id="calLink" href="#" target="_blank" rel="noopener">📅 تقويم Google</a>
+      <a class="btn b-pink" id="icsLink" href="#" download="invitation.ics">📲 تقويم الهاتف</a>
     </div>
   </section>
 
@@ -244,6 +245,17 @@ $("calLink").href = "https://calendar.google.com/calendar/render?action=TEMPLATE
   encodeURIComponent("خطوبة " + CONFIG.name1 + " و" + CONFIG.name2) +
   "&dates=" + ics(CONFIG.date) + "/" + ics(CONFIG.dateEnd) +
   "&ctz=Africa/Casablanca&location=" + encodeURIComponent(CONFIG.mapUrl);
+try{
+  var L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Invitation//AR","CALSCALE:GREGORIAN","BEGIN:VEVENT",
+    "UID:" + ics(CONFIG.date) + "@invitation",
+    "DTSTAMP:" + new Date().toISOString().replace(/[-:]|\.\d+/g, ""),
+    "DTSTART:" + ics(CONFIG.date), "DTEND:" + ics(CONFIG.dateEnd),
+    "SUMMARY:خطوبة " + CONFIG.name1 + " و" + CONFIG.name2,
+    "LOCATION:" + CONFIG.placeText, "DESCRIPTION:" + CONFIG.mapUrl,
+    "BEGIN:VALARM","TRIGGER:-PT3H","ACTION:DISPLAY","DESCRIPTION:حفل الخطوبة","END:VALARM",
+    "END:VEVENT","END:VCALENDAR"];
+  $("icsLink").href = URL.createObjectURL(new Blob([L.join("\r\n")], {type:"text/calendar;charset=utf-8"}));
+}catch(err){$("icsLink").style.display = "none"}
 document.title = "دعوة خطوبة " + CONFIG.name1 + " و" + CONFIG.name2;
 
 /* floating hearts */
